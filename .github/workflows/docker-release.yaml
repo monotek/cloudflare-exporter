@@ -32,13 +32,13 @@ jobs:
         uses: docker/metadata-action@v5
         with:
           images: |
-            ghcr.io/${{ github.repository_owner }}/cloudflare_exporter
-            tags: |
-              type=ref,event=branch
-              type=ref,event=tag
-              type=semver,pattern=v{{version}}
-              type=semver,pattern=v{{major}}.{{minor}}
-              type=semver,pattern=v{{major}}
+            ghcr.io/${{ github.repository_owner }}/cloudflare-exporter
+          tags: |
+            type=ref,event=branch
+            type=ref,event=tag
+            type=semver,pattern=v{{version}}
+            type=semver,pattern=v{{major}}.{{minor}}
+            type=semver,pattern=v{{major}}
   
       - name: Build and push
         id: docker_build
