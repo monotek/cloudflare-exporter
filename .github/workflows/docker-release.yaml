@@ -1,58 +1,55 @@
-name: Build and Publish Docker Images after create release tag
+name: release
 
 on:
   push:
+    branches:
+      - main
     tags:
-      - '[0-9]+.[0-9]+.[0-9]+'
+      - 'v*'
 
 jobs:
-  build-and-push-docker-image:
-    name: Build Docker image and push to repositories with version tag
-    runs-on: ubuntu-latest
+  docker-build-push:
+    runs-on: ubuntu-22.04
     steps:
-      - name: Checkout code
+      - name: Checkout Code
         uses: actions/checkout@v4
 
       - name: Set up QEMU
         uses: docker/setup-qemu-action@v3
 
       - name: Set up Docker Buildx
-        id: buildx
-        uses: docker/setup-buildx-action@v1
-
-      - name: Docker meta
-        id: meta
-        uses: docker/metadata-action@v5
-        with:
-          images: |
-            lablabs/cloudflare_exporter
-            ghcr.io/lablabs/cloudflare_exporter
-          # generate Docker tags based on the following events/attributes
-          tags: type=ref,event=tag
-
-      - name: Login to DockerHub
-        uses: docker/login-action@v1
-        with:
-          username: ${{ secrets.DOCKERHUB_USERNAME }}
-          password: ${{ secrets.DOCKERHUB_TOKEN }}
+        uses: docker/setup-buildx-action@v3
 
       - name: Login to Github Packages
-        uses: docker/login-action@v1
+        uses: docker/login-action@v3
         with:
           registry: ghcr.io
           username: ${{ github.repository_owner }}
           password: ${{ secrets.GITHUB_TOKEN }}
 
-      - name: Build image and push to Docker Hub and GitHub Container Registry
+      - name: Docker metadata action
+        id: meta
+        uses: docker/metadata-action@v5
+        with:
+          images: |
+            ghcr.io/${{ github.repository_owner }}/cloudflare_exporter
+            tags: |
+              type=ref,event=branch
+              type=ref,event=tag
+              type=semver,pattern=v{{version}}
+              type=semver,pattern=v{{major}}.{{minor}}
+              type=semver,pattern=v{{major}}
+  
+      - name: Build and push
+        id: docker_build
         uses: docker/build-push-action@v5
         with:
           context: .
           file: ./Dockerfile
-          platforms: linux/amd64,linux/arm64
-          tags: ${{ steps.meta.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}
+          platforms: linux/amd64,linux/arm64
           push: true
+          tags: ${{ steps.meta.outputs.tags }}
 
       - name: Image digest
         run: echo ${{ steps.docker_build.outputs.digest }}
-  
