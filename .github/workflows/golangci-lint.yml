@@ -10,7 +10,7 @@ jobs:
     name: GO lang CI linter
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v4
       - name: golangci-lint
         uses: golangci/golangci-lint-action@v3 # https://github.com/marketplace/actions/run-golangci-lint
         with:
