@@ -1,23 +1,24 @@
-FROM golang:alpine as builder
+FROM golang:1.20.10-alpine3.18 as builder
 
 WORKDIR /app
 
-COPY cloudflare.go cloudflare.go
-COPY main.go main.go
-COPY prometheus.go prometheus.go
-COPY go.mod go.mod
-COPY go.sum go.sum
+COPY . .
 
 RUN go get -d -v
+
 RUN CGO_ENABLED=0 GOOS=linux go build -o cloudflare_exporter .
+
 
 FROM alpine:3.18
 
-RUN apk update && apk add ca-certificates
+RUN apk update && \
+    apk add ca-certificates
 
 COPY --from=builder /app/cloudflare_exporter cloudflare_exporter
 
 ENV CF_API_KEY ""
 ENV CF_API_EMAIL ""
+
+USER nobody
 
 ENTRYPOINT [ "./cloudflare_exporter" ]
