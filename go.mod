@@ -4,7 +4,7 @@ go 1.19
 
 require (
 	github.com/biter777/countries v1.6.6
-	github.com/cloudflare/cloudflare-go v0.79.0
+	github.com/cloudflare/cloudflare-go v0.81.0
 	github.com/machinebox/graphql v0.2.2
 	github.com/namsral/flag v1.7.4-pre
 	github.com/nelkinda/health-go v0.0.1
@@ -30,6 +30,6 @@ require (
 	golang.org/x/net v0.17.0 // indirect
 	golang.org/x/sys v0.13.0 // indirect
 	golang.org/x/text v0.13.0 // indirect
-	golang.org/x/time v0.3.0 // indirect
+	golang.org/x/time v0.4.0 // indirect
 	google.golang.org/protobuf v1.31.0 // indirect
 )
