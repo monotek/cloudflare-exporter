@@ -3,7 +3,7 @@ module github.com/lablabs/cloudflare-exporter
 go 1.19
 
 require (
-	github.com/biter777/countries v1.6.6
+	github.com/biter777/countries v1.7.1
 	github.com/cloudflare/cloudflare-go v0.79.0
 	github.com/machinebox/graphql v0.2.2
 	github.com/namsral/flag v1.7.4-pre
